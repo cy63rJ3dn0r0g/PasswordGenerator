@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        background: black;
+        overflow: hidden;
+    }
+
+    .conteiner {
+        min-width: 750px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 320px;
+    }
+
+    input {
+        transform: scale(1.5);
+    }
+
+    .password {
+        width: 60%;
+        height: 50px;
+        background: white;
+        font-size: 38px;
+        text-align: center;
+    }
+
+    .options {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        width: 60%;
+        font-size: 20px;
+        align-items: center;
+        justify-content: space-evenly;
+        text-align: center;
+    }
+
+    .generator {
+        width: 150px;
+        height: 50px;
+        font-size: 18px;
+        text-transform: capitalize;
+        background: white;
+        border-radius: 10px;
+    }
+
+    p {
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="conteiner">
+        <div class="password"></div>
+        <form class="options">
+            <input type="checkbox" value="upperCase" class="uprLetters">
+            <p>Uppercase letters</p>
+            <input type="checkbox" value="lowerCase" class="lwrLetters">
+            <p>Lowercase letters</p>
+            <input type="checkbox" value="numbers" class="numberz">
+            <p>Numbers</p>
+            <input type="checkbox" value="specChrt" class="specChat">
+            <p>Special characters</p>
+            <button type="submit" class="generator">generate password</button>
+        </form>
+    </div>
+</body>
+<script>
+    const passwordPlace = document.querySelector('.password');
+    const form = document.querySelector('.options');
+
+    const specChrt = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', ';', ':', "'", '"', '<', '>', ',', '.', '?', '/', '|'];
+    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const lowerCase = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', '', 'n', 'o', 'p', 'q', 'r', '', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    const upperCase = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const checkboxes = form.querySelectorAll('[type="checkbox"]');
+        let shouldGeneratePassword = false;
+        let hasNumbers = false;
+        let hasSymbols = false;
+        let hasLowerCase = false;
+        let hasUpperCase = false;
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                shouldGeneratePassword = true;
+                if (checkbox.value === 'numbers') hasNumbers = true;
+                if (checkbox.value === 'specChrt') hasSymbols = true;
+                if (checkbox.value === 'lowerCase') hasLowerCase = true;
+                if (checkbox.value === 'upperCase') hasUpperCase = true;
+            }
+        });
+
+        if (shouldGeneratePassword) {
+            const generatedPassword = generatePassword(12, hasNumbers, hasSymbols, hasLowerCase, hasUpperCase);
+            passwordPlace.textContent = generatedPassword;
+        } else {
+            passwordPlace.textContent = "Please select at least one option.";
+        }
+    });
+
+    function generatePassword(length, hasNumbers, hasSymbols, hasLowerCase, hasUpperCase) {
+        const availableChar = [
+            ...(hasSymbols ? specChrt : []),
+            ...(hasNumbers ? numbers : []),
+            ...(hasLowerCase ? lowerCase : []),
+            ...(hasUpperCase ? upperCase : []),
+        ];
+        let password = '';
+
+        if (availableChar.length === 0) return '';
+
+        for (let i = 0; i < length; i++) {
+            if (availableChar.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableChar.length);
+                password += availableChar[randomIndex];
+            }
+        }
+
+        return password;
+    }
+
+</script>
+
+</html>
